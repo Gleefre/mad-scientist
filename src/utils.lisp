@@ -32,27 +32,39 @@
   (loop for scancode in scancodes
         thereis (kit.sdl2:key-down-p *keyboard-tracker* scancode)))
 
-(defparameter +dirs+ '(:scancode-up
-                       :scancode-down
-                       :scancode-left
-                       :scancode-right
-                       :scancode-w
-                       :scancode-s
-                       :scancode-d
-                       :scancode-a))
+(defun make-direction-tracker (&rest scancodes)
+  (cons scancodes (list :tracker)))
 
-(defun make-direction-tracker ()
-  (list :tracker))
+(defun make-direction-trackers ()
+  (list (make-direction-tracker :scancode-up :scancode-w
+                                :scancode-down :scancode-s)
+        (make-direction-tracker :scancode-left :scancode-d
+                                :scancode-right :scancode-a)))
+
+(defun last-in-direction-tracker (tracker)
+  (cadr (cdr tracker)))
 
 (defun update-direction-tracker (tracker state scancode)
-  (when (member scancode +dirs+)
-    (ecase state
-      (:keydown (push scancode (cdr tracker)))
-      (:keyup (a:removef (cdr tracker) scancode)))))
+  (let ((scancodes (car tracker))
+        (llist (cdr tracker)))
+    (when (member scancode scancodes)
+      (ecase state
+        (:keydown (push scancode (cdr llist)))
+        (:keyup (a:removef (cdr llist) scancode))))))
 
 (defun last-dir ()
-  (case (cadr *direction-tracker*)
-    ((:scancode-w :scancode-up) :up)
-    ((:scancode-s :scancode-down) :down)
-    ((:scancode-a :scancode-left) :left)
-    ((:scancode-d :scancode-right) :right)))
+  (case (last-in-direction-tracker (car *dir-trackers*))
+    ((:scancode-w :scancode-up)
+     (case (last-in-direction-tracker (cadr *dir-trackers*))
+       ((:scancode-a :scancode-left) :upl)
+       ((:scancode-d :scancode-right) :upr)
+       (t :up)))
+    ((:scancode-s :scancode-down)
+     (case (last-in-direction-tracker (cadr *dir-trackers*))
+       ((:scancode-a :scancode-left) :downl)
+       ((:scancode-d :scancode-right) :downr)
+       (t :down)))
+    (t
+     (case (last-in-direction-tracker (cadr *dir-trackers*))
+       ((:scancode-a :scancode-left) :left)
+       ((:scancode-d :scancode-right) :right)))))

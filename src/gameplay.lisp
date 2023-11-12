@@ -13,15 +13,19 @@
 
 (defun dx (direction)
   (ecase direction
-    ((:up :down) 0)
-    ((:left) -1)
-    ((:right) 1)))
+    ((:up :down) 0d0)
+    ((:left) -1d0)
+    ((:right) 1d0)
+    ((:upl :downl) (- (sqrt 0.5d0)))
+    ((:upr :downr) (sqrt 0.5d0))))
 
 (defun dy (direction)
   (ecase direction
     ((:left :right) 0)
     ((:up) -1)
-    ((:down) 1)))
+    ((:down) 1)
+    ((:upl :upr) (- (sqrt 0.5d0)))
+    ((:downl :downr) (sqrt 0.5d0))))
 
 (define-symbol-macro *map* (getf (getf *game* :room) :map))
 
