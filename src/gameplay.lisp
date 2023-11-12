@@ -48,11 +48,5 @@
       (incf (getf *game* :y) dy))))
 
 (defun move* (&optional (speed 0.1))
-  (cond ((pressed? :scancode-up :scancode-w)
-         (move :up speed))
-        ((pressed? :scancode-down :scancode-s)
-         (move :down speed))
-        ((pressed? :scancode-left :scancode-a)
-         (move :left speed))
-        ((pressed? :scancode-right :scancode-d)
-         (move :right speed))))
+  (a:when-let ((direction (last-dir)))
+    (move direction speed)))
