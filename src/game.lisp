@@ -14,7 +14,7 @@
           (*game-window* s::*sketch*)
           (*time-delta* %time-delta)
           (*keyboard-tracker* %tracker))
-      (move*)
+      (move* 0.2)
       (draw-game s:width s:height))))
 
 (s:define-start-function (start) game-window (:resizable t :width 800 :height 1000)
