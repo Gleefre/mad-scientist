@@ -2,11 +2,15 @@
 
 (s:defsketch game-window ((s:title "Mad Scientist")
                           (game (make-game))
-                          (clock (sc:make-clock)))
-  (let ((*game* game)
-        (*game-clock* clock)
-        (*game-window* s::*sketch*))
-    (draw-game s:width s:height)))
+                          (clock (sc:make-clock))
+                          (%last-time (sc:time clock)))
+  (sc:with-freeze clock
+    (let ((*game* game)
+          (*game-clock* clock)
+          (*game-window* s::*sketch*)
+          (*time-delta* (- (sc:time clock) %last-time)))
+      (setf %last-time (sc:time clock))
+      (draw-game s:width s:height))))
 
 (s:define-start-function (start) game-window (:resizable t :width 800 :height 1000)
   (:start (music-init))
