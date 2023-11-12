@@ -1,0 +1,4 @@
+bin/*
+mad-scientist/*
+mad-scientist*zip
+*.fasl

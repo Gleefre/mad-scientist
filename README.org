@@ -1,0 +1,88 @@
+#+title: mad-scientist
+#+author: Gleefre
+#+email: varedif.a.s@gmail.com
+
+#+description: This is a README file for the mad-scientist game
+#+language: en
+
+* About
+   ...
+** Description
+   ...
+** Controls
+   ...
+** Credits
+   ...
+** Reporting bugs
+   Feel free to report bugs using issues on github.
+* Installation
+** From binaries
+   See the [[https://github.com/gleefre/mad-scientist/releases/latest][latest release]].
+** From source
+*** Requirements
+    - Libraries (most of them are available from quicklisp)
+      - Depends on [[https://github.com/vydd/sketch][sketch]], [[https://github.com/Gleefre/sketch-utils][sketch-utils]],
+      - You will need to use ~gleefre/dev~ branch of my sketch's [[https://github.com/Gleefre/sketch][fork]].
+      - You will need to install [[https://github.com/Gleefre/sketch-utils][sketch-utils]] from source, while other libraries can be installed from [[https://www.quicklisp.org/beta/][quicklisp]].
+    - Foreign dependencies
+      - SDL2, SDL2 Image, SDL2 TTF
+        =sketch= relies on =SDL2= library which is a C library.
+        See [[https://github.com/vydd/sketch#foreign-dependencies][sketch's README]] for more details.
+**** Fetch non-quicklisp libraries
+     You can fetch all non-quicklisp libraries with git clone:
+     #+BEGIN_SRC bash
+     cd $HOME/quicklisp/local-projects/
+     git clone https://github.com/Gleefre/sketch -b gleefre/dev
+     git clone https://github.com/Gleefre/sketch-utils
+     #+END_SRC
+*** Building
+    You can build the game with make:
+    #+BEGIN_SRC bash
+    # Builds mad-scientist
+    make build
+    # Bundles executable and all needed resources to mad-scientist/ folder
+    make bundle
+    # For linux
+    # Adds run.sh script to the bundle and creates a zip archive
+    make lin-bundle
+    # For windows
+    # Adds run.bat script to the bundle
+    make win-bundle
+    #+END_SRC
+    You can also specify which lisp implementation to use (sbcl is used by default) with ~LISP~ variable:
+    #+BEGIN_SRC bash
+    LISP=ccl make build
+    #+END_SRC
+**** Supported implementations
+     sbcl, ccl.
+*** Running from source
+    To run this game you need to load the ~:mad-scientist~ system:
+    #+BEGIN_SRC lisp
+    (ql:quickload :mad-scientist)
+    #+END_SRC
+    Then you need to call the main function:
+    #+BEGIN_SRC lisp
+    (mad-scientist:start)
+    #+END_SRC
+    To run the game from a script you might want to use the ~start-toplevel~ funtion:
+    #+BEGIN_SRC lisp
+    (mad-scientist:start-toplevel)
+    #+END_SRC
+    ~start-toplevel~ is blocking and will close the lisp process when you close the game.
+**** Supported implementations
+     sbcl, ccl, ecl.
+* Screenshots
+* License
+   Copyright 2023 Gleefre
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
