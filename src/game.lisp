@@ -6,7 +6,7 @@
                           (%last-time (sc:time clock))
                           (%time-delta 0)
                           (%tracker (make-instance 'kit.sdl2:keystate-tracker))
-                          (%dir-tracker ()))
+                          (%dir-tracker (make-direction-tracker)))
   (sc:with-freeze clock
     (setf %time-delta (- (sc:time clock) %last-time)
           %last-time (sc:time clock))
@@ -43,11 +43,7 @@
         (*direction-tracker* (game-window-%dir-tracker window)))
     (kit.sdl2:keystate-update *keyboard-tracker* state rep? keysym)
     (when (not rep?)
-      (let ((scancode (sdl2:scancode keysym)))
-        (when (member scancode +dirs+)
-          (ecase state
-            (:keydown (push scancode *direction-tracker*))
-            (:keyup (a:removef *direction-tracker* scancode))))))
+      (update-direction-tracker *direction-tracker* state (sdl2:scancode keysym)))
     (call-next-method)))
 
 (defmethod kit.sdl2:keyboard-event ((app game-window) state ts rep? keysym))

@@ -41,8 +41,17 @@
                        :scancode-d
                        :scancode-a))
 
+(defun make-direction-tracker ()
+  (list :tracker))
+
+(defun update-direction-tracker (tracker state scancode)
+  (when (member scancode +dirs+)
+    (ecase state
+      (:keydown (push scancode (cdr tracker)))
+      (:keyup (a:removef (cdr tracker) scancode)))))
+
 (defun last-dir ()
-  (case (car *direction-tracker*)
+  (case (cadr *direction-tracker*)
     ((:scancode-w :scancode-up) :up)
     ((:scancode-s :scancode-down) :down)
     ((:scancode-a :scancode-left) :left)
