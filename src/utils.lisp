@@ -31,3 +31,19 @@
 (defun pressed? (&rest scancodes)
   (loop for scancode in scancodes
         thereis (kit.sdl2:key-down-p *keyboard-tracker* scancode)))
+
+(defparameter +dirs+ '(:scancode-up
+                       :scancode-down
+                       :scancode-left
+                       :scancode-right
+                       :scancode-w
+                       :scancode-s
+                       :scancode-d
+                       :scancode-a))
+
+(defun last-dir ()
+  (case (car *direction-tracker*)
+    ((:scancode-w :scancode-up) :up)
+    ((:scancode-s :scancode-down) :down)
+    ((:scancode-a :scancode-left) :left)
+    ((:scancode-d :scancode-right) :right)))
