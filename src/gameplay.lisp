@@ -46,3 +46,13 @@
     (when (can-stand? (+ x dx) (+ y dy))
       (incf (getf *game* :x) dx)
       (incf (getf *game* :y) dy))))
+
+(defun move* ()
+  (cond ((pressed? :scancode-up :scancode-w)
+         (move :up))
+        ((pressed? :scancode-down :scancode-s)
+         (move :down))
+        ((pressed? :scancode-left :scancode-a)
+         (move :left))
+        ((pressed? :scancode-right :scancode-d)
+         (move :right))))

@@ -14,6 +14,7 @@
           (*game-window* s::*sketch*)
           (*time-delta* %time-delta)
           (*keyboard-tracker* %tracker))
+      (move*)
       (draw-game s:width s:height))))
 
 (s:define-start-function (start) game-window (:resizable t :width 800 :height 1000)
@@ -39,14 +40,4 @@
     (kit.sdl2:keystate-update *keyboard-tracker* state rep? keysym)
     (call-next-method)))
 
-(defmethod kit.sdl2:keyboard-event ((app game-window) state ts rep? keysym)
-  (when (eq state :keydown)
-    (case (sdl2:scancode keysym)
-      ((:scancode-w :scancode-up)
-       (move :up))
-      ((:scancode-s :scancode-down)
-       (move :down))
-      ((:scancode-a :scancode-left)
-       (move :left))
-      ((:scancode-d :scancode-right)
-       (move :right)))))
+(defmethod kit.sdl2:keyboard-event ((app game-window) state ts rep? keysym))
