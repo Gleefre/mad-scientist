@@ -28,5 +28,6 @@
                                 :color s:+black+
                                 :size 16)))))
 
-(defun pressed? (scancode)
-  (kit.sdl2:key-down-p *keyboard-tracker* scancode))
+(defun pressed? (&rest scancodes)
+  (loop for scancode in scancodes
+        thereis (kit.sdl2:key-down-p *keyboard-tracker* scancode)))
