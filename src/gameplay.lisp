@@ -27,8 +27,8 @@
 
 (defun on-map? (x y)
   (destructuring-bind (rw rh) (array-dimensions *map*)
-    (and (<= 0 x (1- (* 10 rw)))
-         (<= 0 y (1- (* 10 rh)))
+    (and (<= 0 x (* 10 rw))
+         (<= 0 y (* 10 rh))
          (let ((x* (floor x 10))
                (y* (floor y 10)))
            (not (aref *map* x* y*))))))
