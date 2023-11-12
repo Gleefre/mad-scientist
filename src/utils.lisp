@@ -32,6 +32,8 @@
   (loop for scancode in scancodes
         thereis (kit.sdl2:key-down-p *keyboard-tracker* scancode)))
 
+;; FIXME: move trackers to sketch-utils (maybe),
+;; make them ok, not with conses and lists (but with classes & methods instead)
 (defun make-direction-tracker (&rest scancodes)
   (cons scancodes (list :tracker)))
 

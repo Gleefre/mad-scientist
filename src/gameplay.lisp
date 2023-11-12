@@ -43,6 +43,7 @@
                      always (on-map? (+ x dx) (+ y dy)))))
 
 (defun move (direction &optional (speed 1))
+  ;; FIXME: sliding
   (let ((x (getf *game* :x))
         (y (getf *game* :y))
         (dx (* speed (dx direction)))
