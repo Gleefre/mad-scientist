@@ -54,6 +54,8 @@
   (when h:*server*
     (h:stop h:*server*)
     (setf h:*server* nil)
+    ;; FIXME  -- bug in freeing the environment
+    #+nil
     (loop for sound being the hash-value of *sounds*
           do (m:free sound)
           finally (clrhash *sounds*))))
