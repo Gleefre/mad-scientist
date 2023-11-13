@@ -23,6 +23,7 @@
                (:file "trackers")
                (:file "specials")
                (:file "utils")
+               (:file "math")
                (:file "music")
                (:file "gameplay")
                (:file "draw")
