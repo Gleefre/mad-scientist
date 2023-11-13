@@ -27,7 +27,3 @@
                    (s:make-font :face (s:load-resource (data-path "font/PromptFont.ttf"))
                                 :color s:+black+
                                 :size 16)))))
-
-(defun pressed? (&rest scancodes)
-  (loop for scancode in scancodes
-        thereis (kit.sdl2:key-down-p *keyboard-tracker* scancode)))
