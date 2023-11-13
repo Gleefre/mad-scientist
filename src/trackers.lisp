@@ -48,8 +48,30 @@
         (:keydown (push scancode (%lp-list tracker)))
         (:keyup (a:removef (%lp-list tracker) scancode))))))
 
-(defun last-pressed (tracker)
+(defmethod last-pressed ((tracker last-pressed-tracker))
   (values (car (%lp-list tracker))
+          (not (null (%lp-list tracker)))))
+
+;; last-pressed tracker but with values
+(defclass last-pressed-map-tracker (last-pressed-tracker)
+  ((scancodes-map :initform (make-hash-table) :initarg :map :accessor lp-tracker-map)))
+
+(defun make-lp-map-tracker (scancodes-map)
+  (make-instance 'last-pressed-map-tracker
+                 :scancodes (a:hash-table-keys scancodes-map)
+                 :map scancodes-map))
+
+(defmacro lp-map-tracker (&body scancodes-map-pairs &aux (map (gensym "map")))
+  `(let ((,map (make-hash-table)))
+     (setf ,@(loop for pair in scancodes-map-pairs
+                   for (codes value) = (a:ensure-list pair)
+                   for last-value = (if (listp pair) value last-value)
+                   append (loop for code in (a:ensure-list codes)
+                                collect `(gethash ,code ,map) collect last-value)))
+     (make-lp-map-tracker ,map)))
+
+(defmethod last-pressed ((tracker last-pressed-map-tracker))
+  (values (gethash (car (%lp-list tracker)) (lp-tracker-map tracker))
           (not (null (%lp-list tracker)))))
 
 ;;; Hook into the sketch
