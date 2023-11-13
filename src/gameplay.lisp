@@ -63,6 +63,7 @@
   (define-tracker :horizontal (make-lp-tracker :scancode-left :scancode-right :scancode-a :scancode-d)))
 
 (defun last-dir ()
+  ;; FIXME: this is code is quite bad
   (case (last-pressed (tracker :vertical))
     ((:scancode-w :scancode-up)
      (case (last-pressed (tracker :horizontal))
