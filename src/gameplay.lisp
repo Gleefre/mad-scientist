@@ -11,21 +11,34 @@
         :x 0
         :y 0))
 
-(defun dx (direction)
-  (ecase direction
-    ((:up :down) 0d0)
-    ((:left) -1d0)
-    ((:right) 1d0)
-    ((:upl :downl) (- (sqrt 0.5d0)))
-    ((:upr :downr) (sqrt 0.5d0))))
+;;; Trackers
 
-(defun dy (direction)
-  (ecase direction
-    ((:left :right) 0)
-    ((:up) -1)
-    ((:down) 1)
-    ((:upl :upr) (- (sqrt 0.5d0)))
-    ((:downl :downr) (sqrt 0.5d0))))
+(defun init-trackers ()
+  (define-tracker :vertical (lp-map-tracker
+                              ((:scancode-up :scancode-w) -1)
+                              ((:scancode-down :scancode-s) 1)
+                              ((nil) 0)))
+  (define-tracker :horizontal (lp-map-tracker
+                                ((:scancode-left :scancode-a) -1)
+                                ((:scancode-right :scancode-d) 1)
+                                ((nil) 0))))
+
+;;; Movement
+
+(defun x (dir) (aref dir 0))
+(defun y (dir) (aref dir 1))
+
+(defun dx (dir)
+  (* (x dir)
+     (if (zerop (y dir))
+         1
+         (sqrt 0.5d0))))
+
+(defun dy (dir)
+  (* (y dir)
+     (if (zerop (x dir))
+         1
+         (sqrt 0.5d0))))
 
 (define-symbol-macro *map* (getf (getf *game* :room) :map))
 
@@ -52,30 +65,10 @@
       (incf (getf *game* :x) dx)
       (incf (getf *game* :y) dy))))
 
+(defun last-direction ()
+  (vector
+   (last-pressed (tracker :horizontal))
+   (last-pressed (tracker :vertical))))
+
 (defun move* (&optional (speed 0.1))
-  (a:when-let ((direction (last-dir)))
-    (move direction speed)))
-
-;;; Trackers
-
-(defun init-trackers ()
-  (define-tracker :vertical (make-lp-tracker :scancode-up :scancode-down :scancode-w :scancode-s))
-  (define-tracker :horizontal (make-lp-tracker :scancode-left :scancode-right :scancode-a :scancode-d)))
-
-(defun last-dir ()
-  ;; FIXME: this is code is quite bad
-  (case (last-pressed (tracker :vertical))
-    ((:scancode-w :scancode-up)
-     (case (last-pressed (tracker :horizontal))
-       ((:scancode-a :scancode-left) :upl)
-       ((:scancode-d :scancode-right) :upr)
-       (t :up)))
-    ((:scancode-s :scancode-down)
-     (case (last-pressed (tracker :horizontal))
-       ((:scancode-a :scancode-left) :downl)
-       ((:scancode-d :scancode-right) :downr)
-       (t :down)))
-    (t
-     (case (last-pressed (tracker :horizontal))
-       ((:scancode-a :scancode-left) :left)
-       ((:scancode-d :scancode-right) :right)))))
+  (move (last-direction) speed))
