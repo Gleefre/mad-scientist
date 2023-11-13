@@ -20,6 +20,7 @@
   :pathname "src"
   :serial T
   :components ((:file "packages")
+               (:file "trackers")
                (:file "specials")
                (:file "utils")
                (:file "music")
