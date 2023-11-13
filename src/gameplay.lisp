@@ -14,31 +14,36 @@
 ;;; Trackers
 
 (defun init-trackers ()
-  (define-tracker :vertical (lp-map-tracker
-                              ((:scancode-up :scancode-w) -1)
-                              ((:scancode-down :scancode-s) 1)
-                              ((nil) 0)))
-  (define-tracker :horizontal (lp-map-tracker
-                                ((:scancode-left :scancode-a) -1)
-                                ((:scancode-right :scancode-d) 1)
-                                ((nil) 0))))
+  (define-tracker :vertical
+      (lp-map-tracker
+        ((:scancode-up :scancode-w) -1)
+        ((:scancode-down :scancode-s) 1)
+        ((nil) 0)))
+  (define-tracker :horizontal
+      (lp-map-tracker
+        ((:scancode-left :scancode-a) -1)
+        ((:scancode-right :scancode-d) 1)
+        ((nil) 0))))
 
-;;; Movement
+;;; Vectors math
+
+(declaim (inline x (setf x) y (setf y) vec vec*))
 
 (defun x (dir) (aref dir 0))
+(defun (setf x) (value dir) (setf (aref dir 0) value))
+
 (defun y (dir) (aref dir 1))
+(defun (setf y) (value dir) (setf (aref dir 1) value))
 
-(defun dx (dir)
-  (* (x dir)
-     (if (zerop (y dir))
-         1
-         (sqrt 0.5d0))))
+(defun vec (x y)
+  (vector x y))
 
-(defun dy (dir)
-  (* (y dir)
-     (if (zerop (x dir))
-         1
-         (sqrt 0.5d0))))
+(defun vec* (x y &aux (norm (sqrt (+ (expt x 2) (expt y 2)))))
+  (unless (zerop norm)
+    (setf x (/ x norm) y (/ y norm)))
+  (vector x y))
+
+;;; Movement
 
 (define-symbol-macro *map* (getf (getf *game* :room) :map))
 
@@ -55,18 +60,18 @@
         always (loop for dy in (list eps (- 2 eps))
                      always (on-map? (+ x dx) (+ y dy)))))
 
-(defun move (direction &optional (speed 1))
+(defun move (dir &optional (speed 1))
   ;; FIXME: sliding
   (let ((x (getf *game* :x))
         (y (getf *game* :y))
-        (dx (* speed (dx direction)))
-        (dy (* speed (dy direction))))
+        (dx (* speed (x dir)))
+        (dy (* speed (y dir))))
     (when (can-stand? (+ x dx) (+ y dy))
       (incf (getf *game* :x) dx)
       (incf (getf *game* :y) dy))))
 
 (defun last-direction ()
-  (vector
+  (vec*
    (last-pressed (tracker :horizontal))
    (last-pressed (tracker :vertical))))
 
